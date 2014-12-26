@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ost</title>
+  <style>
+  </style>
+</head>
+ 
+<body>
+  <video id="video"></video><br/><br/><br/>
+  <button id="startButton" type="button">Start</button><br/><br/><br/>
+  <a href="https://github.com/DonKarlssonSan/Ost">Check GitHub page for browser support info</a>
+  <script>
+  (function() {
+    var video = document.querySelector('#video');
+    navigator.getUserMedia = (navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia);
+		
+    if (navigator.getUserMedia) {
+      document.querySelector("#startButton").addEventListener('click', startButton_Clicked);
+      				
+      function gotStream(stream) {
+        if (navigator.mozGetUserMedia) {
+          video.mozSrcObject = stream;
+        } else {
+          var vendorURL = window.URL || window.webkitURL;
+          video.src = vendorURL.createObjectURL(stream); 
+        }
+        video.play();
+      }
+        
+      function startButton_Clicked() {
+        this.disabled = true;
+        navigator.getUserMedia( { audio: false, video: true }, gotStream, error);
+      }
+      
+      function error(message) {
+        console.log(message);
+      }
+    } else {
+      document.querySelector("#startButton").disabled = true;
+      alert("Sorry, you can't capture video from your webcam in this web browser. Try the latest desktop version of Firefox, Chrome or Opera.");
+    }
+  })();
+  </script>
+</body>
+</html>
