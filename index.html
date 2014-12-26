@@ -8,18 +8,25 @@
  
 <body>
   <video id="video"></video><br/><br/><br/>
-  <button id="startButton" type="button">Start</button><br/><br/><br/>
-  <a href="https://github.com/DonKarlssonSan/Ost">Check GitHub page for browser support info</a>
+  <canvas id="canvas" width="640" height="480" style="display: flex;">
+  </canvas><br />
+  <button id="startButton" type="button">Start</button><br/><br/>
+  <button id="photoButton" type="button">Take photo</button><br/><br/><br/>
+  <a href="https://github.com/DonKarlssonSan/Ost">GitHub page</a>
   <script>
   (function() {
     var video = document.querySelector('#video');
+    var canvas = document.querySelector('#canvas');
+    var canvasContext = canvas.getContext('2d');
+    
     navigator.getUserMedia = (navigator.getUserMedia ||
       navigator.webkitGetUserMedia ||
       navigator.mozGetUserMedia ||
       navigator.msGetUserMedia);
 		
     if (navigator.getUserMedia) {
-      document.querySelector("#startButton").addEventListener('click', startButton_Clicked);
+      document.querySelector("#startButton").addEventListener('click', start);
+      document.querySelector("#photoButton").addEventListener('click', takePhoto);
       				
       function gotStream(stream) {
         if (navigator.mozGetUserMedia) {
@@ -31,7 +38,7 @@
         video.play();
       }
         
-      function startButton_Clicked() {
+      function start() {
         this.disabled = true;
         navigator.getUserMedia( { audio: false, video: true }, gotStream, error);
       }
@@ -39,8 +46,14 @@
       function error(message) {
         console.log(message);
       }
+      
+      function takePhoto() {
+        canvasContext.drawImage(video, 0, 0);
+      }
     } else {
       document.querySelector("#startButton").disabled = true;
+      document.querySelector("#photoButton").disabled = true;
+      
       alert("Sorry, you can't capture video from your webcam in this web browser. Try the latest desktop version of Firefox, Chrome or Opera.");
     }
   })();
