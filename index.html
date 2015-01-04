@@ -3,6 +3,11 @@
 <head>
   <title>Ost!</title>
   <style>
+
+.margin {
+  margin: 30px;
+}
+    
 .drop-shadow {
   position: relative;
 }
@@ -30,8 +35,8 @@
 </head>
  
 <body>
-  <video id="video"></video>
-  <canvas id="canvas" class="drop-shadow" width="320" height="180" style="display: flex;"></canvas><br />
+  <video id="video" class="drop-shadow margin"></video>
+  <canvas id="canvas" class="drop-shadow margin" width="320" height="180"></canvas><br/><br/>
   <button id="startButton" type="button">Start</button><br/><br/>
   <button id="photoButton" type="button">Take photo</button><br/><br/><br/>
   <a href="https://github.com/DonKarlssonSan/Ost">GitHub page</a>
@@ -86,7 +91,7 @@
       function takePhoto() {
         canvasContext.drawImage(video, 0, 0);
         var angle = getRandomNumberWithMax(20) - 10;
-        //document.getElementById("canvas").style.transform="rotate(" + angle + "deg)";          
+        document.getElementById("canvas").style.transform="rotate(" + angle + "deg)";          
       }
     } else {
       document.querySelector("#startButton").disabled = true;
