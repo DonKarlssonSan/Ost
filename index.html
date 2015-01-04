@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Ost</title>
-  <style>
-  </style>
+  <title>Ost!</title>
 </head>
  
 <body>
@@ -46,8 +44,14 @@
         console.log(message);
       }
       
+      function getRandomNumberWithMax (max) {
+        return Math.floor(Math.random() * max);
+      }
+      
       function takePhoto() {
         canvasContext.drawImage(video, 0, 0);
+        var angle = getRandomNumberWithMax(10) - 20;
+        document.getElementById("canvas").style.transform="rotate(" + angle + "deg)";          
       }
     } else {
       document.querySelector("#startButton").disabled = true;
