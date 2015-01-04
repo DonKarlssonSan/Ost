@@ -37,7 +37,17 @@
         
       function start() {
         this.disabled = true;
-        navigator.getUserMedia( { audio: false, video: true }, gotStream, error);
+        navigator.getUserMedia( { 
+          audio: false,  
+          video: {
+            mandatory: {
+              maxWidth: 320,
+              maxHeight: 180
+            }
+          }
+        }, 
+        gotStream, 
+        error);
       }
       
       function error(message) {
@@ -50,7 +60,7 @@
       
       function takePhoto() {
         canvasContext.drawImage(video, 0, 0);
-        var angle = getRandomNumberWithMax(10) - 20;
+        var angle = getRandomNumberWithMax(20) - 10;
         document.getElementById("canvas").style.transform="rotate(" + angle + "deg)";          
       }
     } else {
