@@ -46,9 +46,6 @@ body {
       navigator.msGetUserMedia);
 		
     if (navigator.getUserMedia) {
-      document.querySelector("#startButton").addEventListener('click', start);
-      document.querySelector("#photoButton").addEventListener('click', takePhoto);
-      				
       function gotStream(stream) {
         if (navigator.mozGetUserMedia) {
           video.mozSrcObject = stream;
@@ -59,6 +56,10 @@ body {
         video.play();
       }
         
+      function error(message) {
+        console.log(message);
+      }
+      
       function start() {
         this.disabled = true;
         navigator.getUserMedia( { 
@@ -72,10 +73,6 @@ body {
         }, 
         gotStream, 
         error);
-      }
-      
-      function error(message) {
-        console.log(message);
       }
       
       function getRandomNumberWithMax (max) {
@@ -93,6 +90,9 @@ body {
         element.className = "photo";
         document.getElementById("stack").appendChild(element);        
       }
+
+      document.querySelector("#startButton").addEventListener('click', start);
+      document.querySelector("#photoButton").addEventListener('click', takePhoto);      				
     } else {
       document.querySelector("#startButton").disabled = true;
       document.querySelector("#photoButton").disabled = true;
