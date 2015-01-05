@@ -4,39 +4,33 @@
   <title>Ost!</title>
   <style>
 
+body {
+  background-color: lightgrey;
+}
+
 .margin {
   margin: 30px;
 }
     
-.drop-shadow {
-  position: relative;
-}
-
-.drop-shadow:before,
-.drop-shadow:after {
-  content: "";
+.photo {
+  box-shadow: 3px 3px 3px #888888;
   position: absolute;
-  z-index: -1;
-  bottom: 15px;
-  left: 10px;
-  width: 50%;
-  height: 20%;
-  max-width: 300px;
-  box-shadow: 0 15px 10px rgba(0, 0, 0, 0.7);
-  transform: rotate(-3deg);
+  top: 0;
+  left: 0;
+  margin: 30px;
+  padding: 12px;
+  background-color: white;
 }
 
-.drop-shadow:after{
-  right: 10px;
-  left: auto;
-  transform: rotate(3deg);
-}
   </style>
 </head>
  
 <body>
-  <video id="video" class="drop-shadow margin"></video>
-  <canvas id="canvas" class="drop-shadow margin" width="320" height="180"></canvas><br/><br/>
+  <video id="video" class="margin"></video>
+  <div id="stack">
+  <canvas id="canvas" width="320" height="180" style="display: none;"></canvas>
+  </div>
+  <br/><br/>
   <button id="startButton" type="button">Start</button><br/><br/>
   <button id="photoButton" type="button">Take photo</button><br/><br/><br/>
   <a href="https://github.com/DonKarlssonSan/Ost">GitHub page</a>
@@ -90,8 +84,14 @@
       
       function takePhoto() {
         canvasContext.drawImage(video, 0, 0);
-        var angle = getRandomNumberWithMax(20) - 10;
-        document.getElementById("canvas").style.transform="rotate(" + angle + "deg)";          
+        var element = document.createElement("img");
+        element.src = canvas.toDataURL();
+        var angle = getRandomNumberWithMax(30) - 15;
+        element.style.transform="rotate(" + angle + "deg)";
+        element.style.top = getRandomNumberWithMax(50) + "px";
+        element.style.left = (getRandomNumberWithMax(50) + 400) + "px"; 
+        element.className = "photo";
+        document.getElementById("stack").appendChild(element);        
       }
     } else {
       document.querySelector("#startButton").disabled = true;
