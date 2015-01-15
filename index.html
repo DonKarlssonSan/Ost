@@ -8,6 +8,14 @@ body {
   background-color: lightgrey;
 }
 
+.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
 .margin {
   margin: 30px;
 }
@@ -26,18 +34,23 @@ body {
 </head>
  
 <body>
-  <video id="video" class="margin"></video>
-  <div id="stack">
-  <canvas id="canvas" width="320" height="180" style="display: none;"></canvas>
-  </div>
-  <br/><br/>
-  <button id="startButton" type="button">Start</button><br/><br/>
-  <button id="photoButton" type="button">Take photo</button><br/><br/><br/>
-  <a href="https://github.com/DonKarlssonSan/Ost">GitHub page</a>
+  <div id="wrapper" class="fullscreen">
+    <video id="video" class="margin"></video>
+    <div id="stack">
+      <canvas id="canvas" width="320" height="180" style="display: none;"></canvas>
+    </div>
+    <br/><br/>
+    <div class="margin">
+      <button id="startButton" type="button">Start webcam</button> 
+      <button id="photoButton" type="button">Take photo</button><br/><br/><br/>
+      You can drag your photos around!<br/><br/><br/>
+      <a href="https://github.com/DonKarlssonSan/Ost">GitHub page</a>
+    </div>
+  </div>  
   <script>
   (function() {
-    var video = document.querySelector('#video');
-    var canvas = document.querySelector('#canvas');
+    var video = document.getElementById('video');
+    var canvas = document.getElementById('canvas');
     var canvasContext = canvas.getContext('2d');
     
     navigator.getUserMedia = (navigator.getUserMedia ||
@@ -87,15 +100,54 @@ body {
         element.style.transform="rotate(" + angle + "deg)";
         element.style.top = getRandomNumberWithMax(50) + "px";
         element.style.left = (getRandomNumberWithMax(50) + 400) + "px"; 
+        element.style.zIndex = z;
         element.className = "photo";
+        element.addEventListener('dragstart', dragStart, false);
         document.getElementById("stack").appendChild(element);        
       }
 
-      document.querySelector("#startButton").addEventListener('click', start);
-      document.querySelector("#photoButton").addEventListener('click', takePhoto);      				
+      var draggedElement;
+      var img = document.getElementById('img');
+      var x, y, z = 0;
+
+      function dragStart(e) {
+        draggedElement = this;
+        x = event.x - this.offsetLeft;
+        y = event.y - this.offsetTop;
+        e.dataTransfer.setDragImage(this, x, y);
+      }
+
+      function drop(e) {
+        z++;
+        draggedElement.style.left = (e.clientX - x - 30) + "px";
+        draggedElement.style.top = (e.clientY - y - 30) + "px";
+        draggedElement.style.zIndex = z;
+        if (e.stopPropagation) {
+          e.stopPropagation();
+        }
+        e.preventDefault();
+        return false;
+      }
+
+      function dragEnter(e) {
+        e.preventDefault();
+        return true;
+      }
+
+      function dragOver(e) {
+        e.preventDefault();
+      }
+      
+      document.getElementById("startButton").addEventListener('click', start);
+      document.getElementById("photoButton").addEventListener('click', takePhoto);      				
+
+      var container = document.body;
+      container.addEventListener('drop', drop, false);
+      container.addEventListener('dragenter', dragEnter, false);
+      container.addEventListener('dragover', dragOver, false);     
     } else {
-      document.querySelector("#startButton").disabled = true;
-      document.querySelector("#photoButton").disabled = true;
+      document.getElementById("startButton").disabled = true;
+      document.getElementById("photoButton").disabled = true;
       
       alert("Sorry, you can't capture video from your webcam in this web browser. Try the latest desktop version of Firefox, Chrome or Opera.");
     }
