@@ -44,7 +44,13 @@ body {
       <button id="startButton" type="button">Start webcam</button> 
       <button id="photoButton" type="button">Take photo</button><br/><br/><br/>
       You can drag your photos around!<br/><br/><br/>
-      <a href="https://github.com/DonKarlssonSan/Ost">GitHub page</a>
+      <a href="https://github.com/DonKarlssonSan/Ost">GitHub page</a><br/>
+      <div
+        class="fb-like"
+        data-share="true"
+        data-width="450"
+        data-show-faces="true">
+      </div>
     </div>
   </div>  
   <script>
@@ -145,6 +151,22 @@ body {
       container.addEventListener('drop', drop, false);
       container.addEventListener('dragenter', dragEnter, false);
       container.addEventListener('dragover', dragOver, false);     
+      
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '598745043558427',
+          xfbml      : true,
+          version    : 'v2.2'
+        });
+      };
+
+      (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
     } else {
       document.getElementById("startButton").disabled = true;
       document.getElementById("photoButton").disabled = true;
