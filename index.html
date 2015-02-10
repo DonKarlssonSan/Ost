@@ -61,8 +61,11 @@ body {
       </div>
       </p>
       <p>
+<!--
         <fb:login-button scope="publish_actions,user_photos" onlogin="checkLoginState();">
         </fb:login-button>
+-->
+        <button id="facebookLoginButton" type="button">Facebook Log In</button>
 
         <div id="status">
         </div>
@@ -169,6 +172,7 @@ body {
       document.getElementById("startButton").addEventListener('click', start);
       document.getElementById("photoButton").addEventListener('click', takePhoto);      				
       document.getElementById("shareOnFacebookButton").addEventListener('click', shareOnFacebook);      				
+      document.getElementById("facebookLoginButton").addEventListener('click', facebookLogin);      				
 
       var container = document.body;
       container.addEventListener('drop', drop, false);
@@ -233,6 +237,13 @@ body {
         }
       }
 
+      function facebookLogin() {
+        FB.login(function(response) {
+          checkLoginState();
+          }, {scope: "publish_actions,user_photos"}
+        );
+      }
+      
       // This function is called when someone finishes with the Login
       // Button.  See the onlogin handler attached to it in the sample
       // code below.
