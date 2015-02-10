@@ -44,6 +44,7 @@ body {
       <p>
       <button id="startButton" type="button">Start webcam</button> 
       <button id="photoButton" type="button">Take photo</button>
+      <button id="shareOnFacebookButton" type="button">Share on Facebook</button>
       </p>
       <p>
       You can drag your photos around!
@@ -58,6 +59,13 @@ body {
         data-width="450"
         data-show-faces="true">
       </div>
+      </p>
+      <p>
+        <fb:login-button scope="publish_actions,user_photos" onlogin="checkLoginState();">
+        </fb:login-button>
+
+        <div id="status">
+        </div>
       </p>
     </div>
   </div>  
@@ -152,14 +160,88 @@ body {
         e.preventDefault();
       }
       
+      function shareOnFacebook() {
+        post("http://graph.facebook.com/v2.2/me/photos", function (response) {
+          alert(response);
+        }
+      }
+      
       document.getElementById("startButton").addEventListener('click', start);
       document.getElementById("photoButton").addEventListener('click', takePhoto);      				
+      document.getElementById("shareOnFacebookButton").addEventListener('click', shareOnFacebook);      				
 
       var container = document.body;
       container.addEventListener('drop', drop, false);
       container.addEventListener('dragenter', dragEnter, false);
       container.addEventListener('dragover', dragOver, false);     
       
+      // Start of evil
+      // TODO: move to separate file
+      var accessToken;
+        
+      function post (url, callback) {
+        var formData = new FormData();
+        formData.append("access_token", accessToken);
+        //formData.append("source", blob);
+        formData.append("url", "http://www.clashmusic.com/sites/default/files/styles/article_feature/public/legacy/files/johnny_cash_1.jpg"); // just testing
+        formData.append("message", "Say cheese!");
+        var request = new XMLHttpRequest();
+        //request.setRequestHeader("Content-type", "multipart/form-data");
+        //request.setRequestHeader("Content-length", params.length);
+        request.setRequestHeader("Connection", "close");
+
+        request.onreadystatechange = function() {
+          if(request.readyState == 4 && request.status == 200) {
+            callback(request.responseText);
+          }
+        }
+
+        request.open("POST", url, true);
+        request.send(formData);
+      }
+      
+      // TODO: remove
+      function testAPI() {
+        console.log('Welcome!  Fetching your information.... ');
+        FB.api('/me', function(response) {
+          console.log('Successful login for: ' + response.name);
+          document.getElementById('status').innerHTML =
+          'Thanks for logging in, ' + response.name + '!';
+        });
+      }
+        
+      function statusChangeCallback(response) {
+        console.log('statusChangeCallback');
+        console.log(response);
+        // The response object is returned with a status field that lets the
+        // app know the current login status of the person.
+        // Full docs on the response object can be found in the documentation
+        // for FB.getLoginStatus().
+        if (response.status === 'connected') {
+          accessToken = response.authResponse.accessToken;
+          // Logged into your app and Facebook.
+          testAPI();
+        } else if (response.status === 'not_authorized') {
+          // The person is logged into Facebook, but not your app.
+          document.getElementById('status').innerHTML = 'Please log ' +
+          'into this app.';
+        } else {
+          // The person is not logged into Facebook, so we're not sure if
+          // they are logged into this app or not.
+          document.getElementById('status').innerHTML = 'Please log ' +
+          'into Facebook.';
+        }
+      }
+
+      // This function is called when someone finishes with the Login
+      // Button.  See the onlogin handler attached to it in the sample
+      // code below.
+      function checkLoginState() {
+        FB.getLoginStatus(function(response) {
+          statusChangeCallback(response);
+        });
+      }   
+        
       window.fbAsyncInit = function() {
         FB.init({
           appId      : '598745043558427',
