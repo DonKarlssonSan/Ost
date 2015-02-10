@@ -186,7 +186,8 @@ body {
         formData.append("url", "http://www.clashmusic.com/sites/default/files/styles/article_feature/public/legacy/files/johnny_cash_1.jpg"); // just testing
         formData.append("message", "Say cheese!");
         var request = new XMLHttpRequest();
-        //request.setRequestHeader("Content-type", "multipart/form-data");
+        request.open("POST", url, true);
+        request.setRequestHeader("Content-type", "multipart/form-data");
         //request.setRequestHeader("Content-length", params.length);
         request.setRequestHeader("Connection", "close");
 
@@ -196,7 +197,6 @@ body {
           }
         }
 
-        request.open("POST", url, true);
         request.send(formData);
       }
       
