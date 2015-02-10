@@ -191,13 +191,17 @@ body {
         formData.append("message", "Say cheese!");
         var request = new XMLHttpRequest();
         request.open("POST", url, true);
-        request.setRequestHeader("Content-type", "multipart/form-data");
+        // This is needed when uploading an image with the source parameter
+        //request.setRequestHeader("Content-type", "multipart/form-data");
+        
         //request.setRequestHeader("Content-length", params.length);
-        request.setRequestHeader("Connection", "close");
+        //request.setRequestHeader("Connection", "close");
 
         request.onreadystatechange = function() {
           if(request.readyState == 4 && request.status == 200) {
             callback(request.responseText);
+          } else {
+            console.log(request.responseText);
           }
         }
 
