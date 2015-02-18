@@ -165,23 +165,6 @@ body {
         e.preventDefault();
       }
       
-      function shareOnFacebook() {
-        html2canvas(document.getElementById("stack"), {
-          onrendered: function(canvas) {
-            var dataURL = canvas.toDataURL();
-            window.open(dataURL);
-            var blob = dataURItoBlob(dataURL);
-            post(blob, function (response) {
-              alert("The image was successfully posted to Facebook!");
-              console.log(response);
-            });
-          },
-          allowTaint: true,
-          useCORS: true,
-          logging: true
-        });
-      }
-      
       document.getElementById("startButton").addEventListener('click', start);
       document.getElementById("photoButton").addEventListener('click', takePhoto);      				
 
@@ -216,7 +199,6 @@ body {
         var url = "https://graph.facebook.com/v2.2/me/photos";
         var formData = new FormData();
         formData.append("access_token", accessToken);
-        var blob = dataURItoBlob();
         formData.append("source", blob);
         //formData.append("url", "http://www.clashmusic.com/sites/default/files/styles/article_feature/public/legacy/files/johnny_cash_1.jpg"); // just testing
         formData.append("message", "Say cheese!");
@@ -237,6 +219,23 @@ body {
         }
 
         request.send(formData);
+      }
+      
+      function shareOnFacebook() {
+        html2canvas(document.getElementById("stack"), {
+          onrendered: function(canvas) {
+            var dataURL = canvas.toDataURL();
+            window.open(dataURL);
+            var blob = dataURItoBlob(dataURL);
+            post(blob, function (response) {
+              alert("The image was successfully posted to Facebook!");
+              console.log(response);
+            });
+          },
+          allowTaint: true,
+          useCORS: true,
+          logging: true
+        });
       }
       
       // TODO: remove
