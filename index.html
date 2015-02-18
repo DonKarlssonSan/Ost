@@ -28,6 +28,7 @@ body {
   margin: 30px;
   padding: 12px;
   background-color: white;
+  cursor: move;   
 }
 
   </style>
@@ -132,14 +133,14 @@ body {
       }
 
       var draggedElement;
-      var img = document.getElementById('img');
       var x, y, z = 0;
 
       function dragStart(e) {
-        draggedElement = this;
-        x = event.x - this.offsetLeft;
-        y = event.y - this.offsetTop;
-        e.dataTransfer.setDragImage(this, x, y);
+        //draggedElement = this;
+        draggedElement = e.target;
+        x = e.clientX - draggedElement.offsetLeft;
+        y = e.clientY - draggedElement.offsetTop;
+        e.dataTransfer.setDragImage(draggedElement, x, y);
       }
 
       function drop(e) {
@@ -165,7 +166,8 @@ body {
       
       function shareOnFacebook() {
         post("https://graph.facebook.com/v2.2/me/photos", function (response) {
-          alert(response);
+          alert("The image was successfully posted to Facebook!");
+          console.log(response);
         });
       }
       
