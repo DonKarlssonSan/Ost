@@ -9,14 +9,14 @@ body {
   background-color: lightgrey;
 }
 
-.fullscreen {
+.playground {
   position: fixed;
   top: 0;
-  left: 0;
+  left: 400px;
   bottom: 0;
   right: 0;
 }
-
+    
 .margin {
   margin: 30px;
 }
@@ -36,9 +36,9 @@ body {
 </head>
  
 <body>
-  <div id="wrapper" class="fullscreen">
+  <div id="wrapper">
     <video id="video" class="margin"></video>
-    <div id="stack">
+    <div id="stack" class="playground">
       <canvas id="canvas" width="320" height="180" style="display: none;"></canvas>
     </div>
     <br/><br/>
@@ -126,7 +126,7 @@ body {
         var angle = getRandomNumberWithMax(30) - 15;
         element.style.transform="rotate(" + angle + "deg)";
         element.style.top = getRandomNumberWithMax(50) + "px";
-        element.style.left = (getRandomNumberWithMax(50) + 400) + "px"; 
+        element.style.left = getRandomNumberWithMax(50) + "px"; 
         element.style.zIndex = z;
         element.className = "photo";
         element.addEventListener('dragstart', dragStart, false);
@@ -137,11 +137,10 @@ body {
       var x, y, z = 0;
 
       function dragStart(e) {
-        //draggedElement = this;
         draggedElement = e.target;
         x = e.clientX - draggedElement.offsetLeft;
         y = e.clientY - draggedElement.offsetTop;
-        e.dataTransfer.setDragImage(draggedElement, x, y);
+        e.dataTransfer.setDragImage(draggedElement, x-400, y);
       }
 
       function drop(e) {
