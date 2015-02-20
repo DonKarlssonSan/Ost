@@ -190,26 +190,22 @@ body {
         for(var i = 0; i < binary.length; i++) {
           array.push(binary.charCodeAt(i));
         }
-        return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+        return new Blob([new Uint8Array(array)], {type: 'image/png'});
       }
       
       var accessToken;
         
       function post (blob, callback) {
-        var url = "https://graph.facebook.com/v2.2/me/photos";
+        var url = "https://graph.facebook.com/v2.2/me/photos?access_token=" + accessToken;
         var formData = new FormData();
         formData.append("access_token", accessToken);
         formData.append("source", blob);
-        //formData.append("url", "http://www.clashmusic.com/sites/default/files/styles/article_feature/public/legacy/files/johnny_cash_1.jpg"); // just testing
         formData.append("message", "Say cheese!");
         var request = new XMLHttpRequest();
         request.open("POST", url, true);
         // This is needed when uploading an image with the source parameter
         request.setRequestHeader("Content-type", "multipart/form-data");
         
-        //request.setRequestHeader("Content-length", params.length);
-        //request.setRequestHeader("Connection", "close");
-
         request.onreadystatechange = function() {
           if(request.readyState == 4 && request.status == 200) {
             callback(request.responseText);
@@ -225,7 +221,7 @@ body {
         html2canvas(document.getElementById("stack"), {
           onrendered: function(canvas) {
             var dataURL = canvas.toDataURL();
-            window.open(dataURL);
+            document.body.appendChild(canvas);
             var blob = dataURItoBlob(dataURL);
             post(blob, function (response) {
               alert("The image was successfully posted to Facebook!");
@@ -292,9 +288,9 @@ body {
 
       window.fbAsyncInit = function() {
         FB.init({
-          appId      : '598745043558427',
-          xfbml      : true,
-          version    : 'v2.2'
+          appId: '598745043558427',
+          xfbml: true,
+          version: 'v2.2'
         });
       };
 
