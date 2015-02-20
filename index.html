@@ -204,7 +204,7 @@ body {
         var request = new XMLHttpRequest();
         request.open("POST", url, true);
         // This is needed when uploading an image with the source parameter
-        request.setRequestHeader("Content-type", "multipart/form-data");
+        //request.setRequestHeader("Content-type", "multipart/form-data");
         
         request.onreadystatechange = function() {
           if(request.readyState == 4 && request.status == 200) {
