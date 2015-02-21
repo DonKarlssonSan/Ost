@@ -1,7 +1,12 @@
 Ost
 ===
 
-Take a picture with the camera/webcam. Say cheese!
+Take pictures with the camera/webcam. Say cheese!
+
+1. Take some pictures
+2. Re-arrange the pictures inside the black border
+3. Log in to Facebook
+4. Share the photo collage on Facebook
 
 Demo: http://donkarlssonsan.github.io/Ost
 
