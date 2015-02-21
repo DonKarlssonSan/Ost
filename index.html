@@ -15,6 +15,7 @@ body {
   left: 400px;
   bottom: 0;
   right: 0;
+  border: 8px solid black;
 }
     
 .margin {
@@ -63,10 +64,6 @@ body {
       </div>
       </p>
       <p>
-<!--
-        <fb:login-button scope="publish_actions,user_photos" onlogin="checkLoginState();">
-        </fb:login-button>
--->
         <button id="facebookLoginButton" type="button">Facebook Log In</button>
 
         <div id="status">
@@ -202,8 +199,6 @@ body {
         formData.append("message", "Say cheese!");
         var request = new XMLHttpRequest();
         request.open("POST", url, true);
-        // This is needed when uploading an image with the source parameter
-        //request.setRequestHeader("Content-type", "multipart/form-data");
         
         request.onreadystatechange = function() {
           if(request.readyState == 4 && request.status == 200) {
@@ -220,7 +215,7 @@ body {
         html2canvas(document.getElementById("stack"), {
           onrendered: function(canvas) {
             var dataURL = canvas.toDataURL();
-            document.body.appendChild(canvas);
+            //document.body.appendChild(canvas);
             var blob = dataURItoBlob(dataURL);
             post(blob, function (response) {
               alert("The image was successfully posted to Facebook!");
