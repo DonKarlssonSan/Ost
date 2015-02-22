@@ -38,11 +38,10 @@ body {
  
 <body>
   <div id="wrapper">
-    <video id="video" class="margin"></video>
+    <video id="video" width="320" height="240" class="margin"></video>
     <div id="stack" class="playground">
-      <canvas id="canvas" width="320" height="180" style="display: none;"></canvas>
+      <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
     </div>
-    <br/><br/>
     <div class="margin">
       <p>
       <button id="startButton" type="button">Start webcam</button> 
@@ -104,7 +103,7 @@ body {
           video: {
             mandatory: {
               maxWidth: 320,
-              maxHeight: 180
+              maxHeight: 240
             }
           }
         }, 
@@ -117,7 +116,7 @@ body {
       }
       
       function takePhoto() {
-        canvasContext.drawImage(video, 0, 0);
+        canvasContext.drawImage(video, 0, 0, 320, 240);
         var element = document.createElement("img");
         element.src = canvas.toDataURL();
         var angle = getRandomNumberWithMax(30) - 15;
