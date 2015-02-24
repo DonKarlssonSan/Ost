@@ -160,6 +160,7 @@ body {
         element.style.left = getRandomNumberWithMax(50) + "px"; 
         element.style.zIndex = z;
         element.style.filter = video.style.filter;
+        element.style.webkitFilter = video.style.webkitFilter;
         element.className = "photo";
         element.addEventListener('dragstart', dragStart, false);
         document.getElementById("stack").appendChild(element);        
