@@ -32,7 +32,12 @@ body {
   background-color: white;
   cursor: move;   
 }
-
+    
+#filterButtons {
+  width: 300px;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
   </style>
 </head>
  
@@ -44,6 +49,7 @@ body {
     </div>
     <div class="margin">
       <p>
+      <div id="filterButtons"></div>
       <button id="startButton" type="button">Start webcam</button> 
       <button id="photoButton" type="button">Take photo</button>
       <button id="shareOnFacebookButton" type="button">Share on Facebook</button>
@@ -72,6 +78,35 @@ body {
   </div>  
   <script>
   (function() {
+    var filters = [ { 
+      name: "Reset",
+      filter: ""
+    }, { 
+       name: "Blur",
+      filter: "blur(3px)"
+    }, { 
+      name: "B/W",
+      filter: "grayscale(100%)" 
+    }, { 
+      name: "Bright",
+      filter: "brightness(200%)"
+    },{
+      name: "Hue",
+      filter: "hue-rotate(90deg)"
+    },{
+      name: "Invert",
+      filter: "invert(100%)"
+    },{
+      name: "Saturate",
+      filter: "saturate(200%)"
+    },{
+      name: "Sepia",
+      filter: "sepia(100%)"
+    },{
+      name: "Contrast",
+      filter: "contrast(200%)"
+    }];
+  
     var video = document.getElementById('video');
     var canvas = document.getElementById('canvas');
     var canvasContext = canvas.getContext('2d');
@@ -124,6 +159,7 @@ body {
         element.style.top = getRandomNumberWithMax(50) + "px";
         element.style.left = getRandomNumberWithMax(50) + "px"; 
         element.style.zIndex = z;
+        element.style.filter = video.style.filter;
         element.className = "photo";
         element.addEventListener('dragstart', dragStart, false);
         document.getElementById("stack").appendChild(element);        
@@ -168,6 +204,38 @@ body {
       container.addEventListener('dragenter', dragEnter, false);
       container.addEventListener('dragover', dragOver, false);     
       
+                   
+      findFilterByName = function(filterArray, name) {
+        for(var i = 0; i < filterArray.length; i++) {
+          if(filterArray[i].name === name) {
+            return filterArray[i];
+          }
+        }
+        // Not found
+        return null;
+      };
+   
+      var buttonsDiv = document.getElementById("filterButtons");    
+      
+      filters.forEach(function(item){
+        var  button = document.createElement("button");
+        button.innerHTML = item.name;
+        // This will cause a re-flow of the page but we don't care
+        buttonsDiv.appendChild(button);    
+      });
+
+      filterClicked = function(event) {
+        event = event || window.event;
+        var target = event.target || event.srcElement;
+        if(target.nodeName === "BUTTON") {
+          var filter = findFilterByName(filters, target.innerHTML);
+          if(filter) {
+            video.style.filter = filter.filter;
+          }
+        }
+      };
+      buttonsDiv.addEventListener("click", filterClicked, false);                 
+
       // Start of evil
       // TODO: move to separate file
 
