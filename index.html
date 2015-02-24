@@ -82,7 +82,7 @@ body {
       name: "Reset",
       filter: ""
     }, { 
-       name: "Blur",
+      name: "Blur",
       filter: "blur(3px)"
     }, { 
       name: "B/W",
@@ -231,6 +231,7 @@ body {
           var filter = findFilterByName(filters, target.innerHTML);
           if(filter) {
             video.style.filter = filter.filter;
+            video.style.webkitFilter = filter.filter;
           }
         }
       };
