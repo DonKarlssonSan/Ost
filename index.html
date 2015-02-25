@@ -216,28 +216,38 @@ body {
         return null;
       };
    
-      var buttonsDiv = document.getElementById("filterButtons");    
-      
-      filters.forEach(function(item){
-        var  button = document.createElement("button");
-        button.innerHTML = item.name;
-        // This will cause a re-flow of the page but we don't care
-        buttonsDiv.appendChild(button);    
-      });
-
-      filterClicked = function(event) {
-        event = event || window.event;
-        var target = event.target || event.srcElement;
-        if(target.nodeName === "BUTTON") {
-          var filter = findFilterByName(filters, target.innerHTML);
-          if(filter) {
-            video.style.filter = filter.filter;
-            video.style.webkitFilter = filter.filter;
-          }
-        }
+      thisBrowserSupportsCssFilters = function () {
+        var prefixes = " -webkit- -moz- -o- -ms- ".split(" ");
+        var el = document.createElement('div');
+        el.style.cssText = prefixes.join('filter:blur(2px); ');
+        return !!el.style.length && ((document.documentMode === undefined || document.documentMode > 9));
       };
-      buttonsDiv.addEventListener("click", filterClicked, false);                 
+      
+      if(thisBrowserSupportsCssFilters()) {
+        var buttonsDiv = document.getElementById("filterButtons");    
 
+        filters.forEach(function(item){
+          var  button = document.createElement("button");
+          button.innerHTML = item.name;
+          // This will cause a re-flow of the page but we don't care
+          buttonsDiv.appendChild(button);    
+        });
+
+        filterClicked = function(event) {
+          event = event || window.event;
+          var target = event.target || event.srcElement;
+          if(target.nodeName === "BUTTON") {
+            var filter = findFilterByName(filters, target.innerHTML);
+            if(filter) {
+              video.style.filter = filter.filter;
+              video.style.webkitFilter = filter.filter;
+            }
+          }
+        };
+        buttonsDiv.addEventListener("click", filterClicked, false);
+      }
+      
+  
       // Start of evil
       // TODO: move to separate file
 
