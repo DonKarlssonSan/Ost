@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Ost!</title>
   <script src="lib/html2canvas.js"></script>
   <style>
@@ -12,14 +13,15 @@ body {
 .playground {
   position: fixed;
   top: 0;
-  left: 400px;
+  left: 340px;
   bottom: 0;
   right: 0;
   border: 8px solid black;
 }
     
 .margin {
-  margin: 30px;
+  margin: 10px;
+  width: 300px;
 }
     
 .photo {
@@ -38,44 +40,52 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
 }
+
+li {
+  margin-left: -20px;
+}
   </style>
 </head>
  
 <body>
-  <div id="wrapper">
-    <video id="video" width="320" height="240" class="margin"></video>
-    <div id="stack" class="playground">
-      <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
-    </div>
-    <div class="margin">
-      <p>
+  <div id="languageButtons">
+    <button id="sv"><img src="images/se.png" /> Svenska</button>
+    <button id="en"><img src="images/us.png" /> English</button>
+  </div>
+  <video id="video" width="320" height="240" class="margin"></video>
+  <div id="stack" class="playground">
+    <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+  </div>
+  <div class="margin">
+    <p>
       <div id="filterButtons"></div>
-      <button id="startButton" type="button">Start webcam</button> 
-      <button id="photoButton" type="button">Take photo</button>
-      <button id="shareOnFacebookButton" type="button">Share on Facebook</button>
-      </p>
-      <p>
-      You can drag your photos around!
-      </p>
-      <p>
-      <a href="https://github.com/DonKarlssonSan/Ost">GitHub page</a>
-      </p>
-      <p>
-      <div
-        class="fb-like"
-        data-share="true"
-        data-width="450"
-        data-show-faces="true">
-      </div>
-      </p>
-      <p>
-        <button id="facebookLoginButton" type="button">Facebook Log In</button>
+    </p>
+    <ol type="1">
+      <li><button id="startButton">Start webcam</button></li> 
+      <li><button id="photoButton">Take photo</button></li>
+      <li id="beCreative">Experiment with different filters. Take more photos. Drag them around.</li>
+      <li><button id="shareOnFacebookButton">Share on Facebook</button></li>
+    </ol>
 
-        <div id="status">
-        </div>
-      </p>
+    <p>
+    <a href="https://github.com/DonKarlssonSan/Ost">GitHub page</a>
+    </p>
+    <p>
+    <div
+      class="fb-like"
+      data-share="true"
+      data-width="450"
+      data-show-faces="true">
     </div>
-  </div>  
+    </p>
+    <p>
+      <button id="facebookLoginButton" type="button">Facebook Log In</button>
+
+      <div id="status">
+      </div>
+    </p>
+  </div>
+
   <script>
   (function() {
     var filters = [ { 
@@ -85,11 +95,11 @@ body {
       name: "Blur",
       filter: "blur(3px)"
     }, { 
-      name: "B/W",
+      name: "BnW",
       filter: "grayscale(100%)" 
     }, { 
       name: "Bright",
-      filter: "brightness(200%)"
+      filter: "brightness(300%)"
     },{
       name: "Hue",
       filter: "hue-rotate(90deg)"
@@ -98,15 +108,51 @@ body {
       filter: "invert(100%)"
     },{
       name: "Saturate",
-      filter: "saturate(200%)"
+      filter: "saturate(800%)"
     },{
       name: "Sepia",
-      filter: "sepia(100%)"
+      filter: "sepia(400%)"
     },{
       name: "Contrast",
-      filter: "contrast(200%)"
+      filter: "contrast(500%)"
     }];
-  
+    
+    var strings = {
+      sv: {
+      // Buttons
+      startButton: "Starta webkameran",
+      photoButton: "Ta kort",
+      shareOnFacebookButton: "Dela kollaget på Facebook",
+      // Filters
+      Reset: "Återställ",
+      Blur: "Suddigt",
+      BnW: "Svartvitt",
+      Bright: "Ljust",
+      Hue: "Konstiga färger",
+      Invert: "Spöke",
+      Saturate: "Förstärkta färger",
+      Sepia: "Gammaldags",
+      Contrast: "Kontrast",
+      // Instructions
+      beCreative: "Testa olika filter. Ta fler kort. Flytta runt dem."
+    }, en: {
+      startButton: "Start webcam",
+      photoButton: "Take photo",
+      shareOnFacebookButton: "Share the collage on Facebook",
+      // Filters
+      Reset: "Reset",
+      Blur: "Blur",
+      BnW: "Black and white",
+      Bright: "Bright",
+      Hue: "Strange colors",
+      Invert: "Spooky",
+      Saturate: "Too much color",
+      Sepia: "Old style",
+      Contrast: "High contrast",
+      // Instructions
+      beCreative: "Experiment with different filters. Take more photos. Drag them around."
+    }};
+      
     var video = document.getElementById('video');
     var canvas = document.getElementById('canvas');
     var canvasContext = canvas.getContext('2d');
@@ -173,7 +219,7 @@ body {
         draggedElement = e.target;
         x = e.clientX - draggedElement.offsetLeft;
         y = e.clientY - draggedElement.offsetTop;
-        e.dataTransfer.setDragImage(draggedElement, x-400, y);
+        e.dataTransfer.setDragImage(draggedElement, x-340, y);
       }
 
       function drop(e) {
@@ -227,7 +273,8 @@ body {
         var buttonsDiv = document.getElementById("filterButtons");    
 
         filters.forEach(function(item){
-          var  button = document.createElement("button");
+          var button = document.createElement("button");
+          button.id = item.name;
           button.innerHTML = item.name;
           // This will cause a re-flow of the page but we don't care
           buttonsDiv.appendChild(button);    
@@ -236,8 +283,8 @@ body {
         filterClicked = function(event) {
           event = event || window.event;
           var target = event.target || event.srcElement;
-          if(target.nodeName === "BUTTON") {
-            var filter = findFilterByName(filters, target.innerHTML);
+          if(target.nodeName === "BUTTON" || target.nodeName === "IMG") {
+            var filter = findFilterByName(filters, target.id);
             if(filter) {
               video.style.filter = filter.filter;
               video.style.webkitFilter = filter.filter;
@@ -247,7 +294,32 @@ body {
         buttonsDiv.addEventListener("click", filterClicked, false);
       }
       
-  
+      translate = function (language) {
+        stringsForCurrentLanguage = strings[language];
+        if(stringsForCurrentLanguage !== undefined) {
+          console.log("Translating to " + language);
+          for(var id in stringsForCurrentLanguage) {
+            document.getElementById(id).innerHTML = stringsForCurrentLanguage[id];
+          }
+        }
+      }
+      
+      // Translation needs to be done after all filter buttons are added
+      var language = window.navigator.userLanguage || window.navigator.language;
+      console.log("Browser reports language " + language);
+      translate(language.substring(0, 2));
+
+      var languageButtonsDiv = document.getElementById("languageButtons");
+      languageClicked = function(event) {
+        event = event || window.event;
+        var target = event.target || event.srcElement;
+        if(target.nodeName === "BUTTON") {
+          translate(target.id);
+        }
+      };
+      languageButtonsDiv.addEventListener("click", languageClicked, false);    
+
+
       // Start of evil
       // TODO: move to separate file
 
