@@ -342,12 +342,12 @@ li {
       
       var accessToken;
         
-      function post (blob, callback) {
+      function post (blob, message, callback) {
         var url = "https://graph.facebook.com/v2.2/me/photos?access_token=" + accessToken;
         var formData = new FormData();
         formData.append("access_token", accessToken);
         formData.append("source", blob);
-        formData.append("message", "Say cheese!");
+        formData.append("message", message);
         var request = new XMLHttpRequest();
         request.open("POST", url, true);
         
@@ -363,20 +363,26 @@ li {
       }
       
       function shareOnFacebook() {
-        html2canvas(document.getElementById("stack"), {
-          onrendered: function(canvas) {
-            var dataURL = canvas.toDataURL();
-            //document.body.appendChild(canvas);
-            var blob = dataURItoBlob(dataURL);
-            post(blob, function (response) {
-              alert("The image was successfully posted to Facebook!");
-              console.log(response);
-            });
-          },
-          allowTaint: true,
-          useCORS: true,
-          logging: true
-        });
+        var message = prompt("You are about to post the photo collage " +
+                             "inside the black border to Facebook. Please " +
+                             "enter the message that will be displayed " +
+                             "together with the image.");
+        if(message !== null) {
+          html2canvas(document.getElementById("stack"), {
+            onrendered: function(canvas) {
+              var dataURL = canvas.toDataURL();
+              //document.body.appendChild(canvas);
+              var blob = dataURItoBlob(dataURL);
+              post(blob, message, function (response) {
+                alert("The image was successfully posted to Facebook!");
+                console.log(response);
+              });
+            },
+            allowTaint: true,
+            useCORS: true,
+            logging: true
+          });
+        }
       }
       
       // TODO: remove
