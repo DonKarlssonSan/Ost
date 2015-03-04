@@ -64,6 +64,11 @@ li {
       <li><button id="startButton">Start webcam</button></li> 
       <li><button id="photoButton">Take photo</button></li>
       <li id="beCreative">Experiment with different filters. Take more photos. Drag them around.</li>
+      <li>
+          <button id="logInToFacebookButton" type="button">Log in to Facebook</button>
+          <div id="status">
+          </div>
+      </li>
       <li><button id="shareOnFacebookButton">Share on Facebook</button></li>
     </ol>
 
@@ -77,12 +82,6 @@ li {
       data-width="450"
       data-show-faces="true">
     </div>
-    </p>
-    <p>
-      <button id="facebookLoginButton" type="button">Facebook Log In</button>
-
-      <div id="status">
-      </div>
     </p>
   </div>
 
@@ -122,6 +121,7 @@ li {
       // Buttons
       startButton: "Starta webkameran",
       photoButton: "Ta kort",
+      logInToFacebookButton: "Logga in på Facebook",
       shareOnFacebookButton: "Dela kollaget på Facebook",
       // Filters
       Reset: "Återställ",
@@ -134,10 +134,15 @@ li {
       Sepia: "Gammaldags",
       Contrast: "Kontrast",
       // Instructions
-      beCreative: "Testa olika filter. Ta fler kort. Flytta runt dem."
+      beCreative: "Testa olika filter. Ta fler kort. Flytta runt dem.",
+      postInstructions: "Du kommer nu dela fotokollaget inuti den svarta ramen " + 
+                        "på Facebook. Skriv in meddelandet som ska visas " +
+                        "tillsammans med bilden.",
+      postedToFacebook: "Bilden är nu delad på Facebook!"
     }, en: {
       startButton: "Start webcam",
       photoButton: "Take photo",
+      logInToFacebookButton: "Log in to Facebook",
       shareOnFacebookButton: "Share the collage on Facebook",
       // Filters
       Reset: "Reset",
@@ -150,12 +155,18 @@ li {
       Sepia: "Old style",
       Contrast: "High contrast",
       // Instructions
-      beCreative: "Experiment with different filters. Take more photos. Drag them around."
+      beCreative: "Experiment with different filters. Take more photos. Drag them around.",
+      postInstructions: "You are about to post the photo collage " +
+                        "inside the black border to Facebook. Please " +
+                        "enter the message that will be displayed " +
+                        "together with the image.",
+      postedToFacebook: "The image was successfully posted to Facebook!"
     }};
       
     var video = document.getElementById('video');
     var canvas = document.getElementById('canvas');
     var canvasContext = canvas.getContext('2d');
+    var currentLanguage = "en";
     
     navigator.getUserMedia = (navigator.getUserMedia ||
       navigator.webkitGetUserMedia ||
@@ -252,7 +263,7 @@ li {
       container.addEventListener('dragover', dragOver, false);     
       
                    
-      findFilterByName = function(filterArray, name) {
+      function findFilterByName (filterArray, name) {
         for(var i = 0; i < filterArray.length; i++) {
           if(filterArray[i].name === name) {
             return filterArray[i];
@@ -280,7 +291,7 @@ li {
           buttonsDiv.appendChild(button);    
         });
 
-        filterClicked = function(event) {
+        function filterClicked (event) {
           event = event || window.event;
           var target = event.target || event.srcElement;
           if(target.nodeName === "BUTTON" || target.nodeName === "IMG") {
@@ -294,12 +305,16 @@ li {
         buttonsDiv.addEventListener("click", filterClicked, false);
       }
       
-      translate = function (language) {
-        stringsForCurrentLanguage = strings[language];
+      function translate (language) {
+        var stringsForCurrentLanguage = strings[language];
         if(stringsForCurrentLanguage !== undefined) {
           console.log("Translating to " + language);
+          currentLanguage = language;
           for(var id in stringsForCurrentLanguage) {
-            document.getElementById(id).innerHTML = stringsForCurrentLanguage[id];
+            var elementToTranslate = document.getElementById(id);
+            if(elementToTranslate !== null) {
+              elementToTranslate.innerHTML = stringsForCurrentLanguage[id];
+            }
           }
         }
       }
@@ -317,8 +332,11 @@ li {
           translate(target.id);
         }
       };
-      languageButtonsDiv.addEventListener("click", languageClicked, false);    
-
+      languageButtonsDiv.addEventListener("click", languageClicked, false);
+      
+      function getString (id) {
+        return strings[currentLanguage][id];
+      }
 
       // Start of evil
       // TODO: move to separate file
@@ -342,7 +360,7 @@ li {
       
       var accessToken;
         
-      function post (blob, message, callback) {
+      function post (blob, message) {
         var url = "https://graph.facebook.com/v2.2/me/photos?access_token=" + accessToken;
         var formData = new FormData();
         formData.append("access_token", accessToken);
@@ -353,8 +371,11 @@ li {
         
         request.onreadystatechange = function() {
           if(request.readyState == 4 && request.status == 200) {
-            callback(request.responseText);
+            alert(getString("postedToFacebook"));
+            console.log(request.responseText);
           } else {
+            // TODO: better error handling. Such a cliché.
+            // Success fun, error not fun.
             console.log(request.responseText);
           }
         }
@@ -363,20 +384,14 @@ li {
       }
       
       function shareOnFacebook() {
-        var message = prompt("You are about to post the photo collage " +
-                             "inside the black border to Facebook. Please " +
-                             "enter the message that will be displayed " +
-                             "together with the image.");
+        var message = prompt(getString("postInstructions"));
         if(message !== null) {
           html2canvas(document.getElementById("stack"), {
             onrendered: function(canvas) {
               var dataURL = canvas.toDataURL();
               //document.body.appendChild(canvas);
               var blob = dataURItoBlob(dataURL);
-              post(blob, message, function (response) {
-                alert("The image was successfully posted to Facebook!");
-                console.log(response);
-              });
+              post(blob, message);
             },
             allowTaint: true,
             useCORS: true,
@@ -435,7 +450,7 @@ li {
       }
       
       document.getElementById("shareOnFacebookButton").addEventListener('click', shareOnFacebook);      				
-      document.getElementById("facebookLoginButton").addEventListener('click', facebookLogin);      				
+      document.getElementById("logInToFacebookButton").addEventListener('click', facebookLogin);      				
 
       window.fbAsyncInit = function() {
         FB.init({
