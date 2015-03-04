@@ -294,7 +294,7 @@ li {
         function filterClicked (event) {
           event = event || window.event;
           var target = event.target || event.srcElement;
-          if(target.nodeName === "BUTTON" || target.nodeName === "IMG") {
+          if(target.nodeName === "BUTTON") {
             var filter = findFilterByName(filters, target.id);
             if(filter) {
               video.style.filter = filter.filter;
@@ -330,6 +330,8 @@ li {
         var target = event.target || event.srcElement;
         if(target.nodeName === "BUTTON") {
           translate(target.id);
+        } else if (target.nodeName === "IMG") {
+          translate(target.parentElement.id);
         }
       };
       languageButtonsDiv.addEventListener("click", languageClicked, false);
