@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Ost!</title>
-  <script src="lib/html2canvas.js"></script>
+  <script src="lib/rasterizeHTML.allinone.js"></script>
   <style>
 
 body {
@@ -24,17 +24,6 @@ body {
   width: 300px;
 }
     
-.photo {
-  box-shadow: 3px 3px 3px #888888;
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 30px;
-  padding: 12px;
-  background-color: white;
-  cursor: move;   
-}
-    
 #filterButtons {
   width: 300px;
   flex-direction: row;
@@ -53,8 +42,22 @@ li {
     <button id="en"><img src="images/us.png" /> English</button>
   </div>
   <video id="video" width="320" height="240" class="margin"></video>
+  <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+  <canvas id="canvas2" style="display: none;"></canvas>
   <div id="stack" class="playground">
-    <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+    <!-- The style must be declared here to be recognized by rasterizeHTML -->
+    <style>
+      .photo {
+        box-shadow: 3px 3px 3px #888888;
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 30px;
+        padding: 12px;
+        background-color: white;
+        cursor: move;   
+      }
+    </style>    
   </div>
   <div class="margin">
     <p>
@@ -388,16 +391,19 @@ li {
       function shareOnFacebook() {
         var message = prompt(getString("postInstructions"));
         if(message !== null) {
-          html2canvas(document.getElementById("stack"), {
-            onrendered: function(canvas) {
-              var dataURL = canvas.toDataURL();
-              //document.body.appendChild(canvas);
+          var canvas2 = document.getElementById('canvas2');
+          canvas2.width = window.innerWidth - 340;
+          canvas2.height = window.innerHeight;
+
+          var html = document.getElementById("stack").outerHTML;
+          //console.log(html);
+          rasterizeHTML.drawHTML(html, canvas2)
+            .then(function success(renderResult) {
+              var dataURL = canvas2.toDataURL();
               var blob = dataURItoBlob(dataURL);
               post(blob, message);
-            },
-            allowTaint: true,
-            useCORS: true,
-            logging: true
+            }, function error(e) {
+            console.log(e);
           });
         }
       }
