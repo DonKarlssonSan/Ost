@@ -4,13 +4,19 @@
   <meta charset="UTF-8">
   <title>Ost!</title>
   <script src="lib/rasterizeHTML.allinone.js"></script>
+  <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'> 
   <style>
 
 body {
-  background-color: lightgrey;
+  background-color: antiquewhite;
 }
-
+body, button {
+  font-family: 'Montserrat', sans-serif;
+  font-size: small;
+}
+    
 .playground {
+  background-color: darkgray;
   position: fixed;
   top: 0;
   left: 340px;
@@ -32,6 +38,34 @@ body {
 
 li {
   margin-left: -20px;
+}
+    
+button {
+  padding: 3px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  color: white;
+  background-color: #6496c8;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 1px 5px #27496d;
+}
+button:hover,
+button.hover {
+  background-color: #417cb8
+}
+button:active,
+button.active {
+  background-color: #417cb8;
+  box-shadow: 0 3px #27496d;
+  transform: translateY(2px) translateX(1px);
+}    
+    
+button:disabled,
+button.disabled {
+  background-color: darkgrey;
+  box-shadow: 0 3px #27496d;
+  transform: translateY(2px) translateX(1px);
 }
   </style>
 </head>
